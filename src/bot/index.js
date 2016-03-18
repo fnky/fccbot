@@ -67,13 +67,13 @@ module.exports = (app, db, io, comm, config, client, wclient) => {
         poll.end = Date.now();
         poll.save((err) => {
           if (err) {
-            console.error('[POLL CHECK ERR]', err)
+            console.error('[POLL CHECK ERR]', err);
           }
         });
       });
 
       if (cb) {
-        cb()
+        cb();
       }
     });
   };
