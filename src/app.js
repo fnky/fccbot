@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const tmi = require('tmi.js');
 const mongoose = require('mongoose');

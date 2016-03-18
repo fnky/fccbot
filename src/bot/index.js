@@ -1,3 +1,5 @@
+'use strict';
+
 const requireIndex = require('requireindex');
 
 module.exports = (app, db, io, comm, config, client, wclient) => {

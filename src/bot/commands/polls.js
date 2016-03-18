@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = (client, wclient, chat, whisper, comm, config, db) => {
   wclient.on('whisper', (user, message) => {
     const username = user.username;

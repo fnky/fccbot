@@ -1,3 +1,5 @@
+'use strict';
+
 const request = require('request');
 
 module.exports = (client, wclient, chat, whisper, comm, config, db) => {
