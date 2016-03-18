@@ -1,14 +1,14 @@
 'use strict';
 
-const gulp = require('gulp'),
-  autoprefixer = require('gulp-autoprefixer'),
-  babel = require('gulp-babel'),
-  browserSync = require('browser-sync'),
-  cssnano = require('gulp-cssnano'),
-  concat = require('gulp-concat'),
-  sass = require('gulp-sass'),
-  supervisor = require('gulp-supervisor'),
-  uglify = require('gulp-uglify');
+const gulp = require('gulp');
+const autoprefixer = require('gulp-autoprefixer');
+const babel = require('gulp-babel');
+const browserSync = require('browser-sync');
+const cssnano = require('gulp-cssnano');
+const concat = require('gulp-concat');
+const sass = require('gulp-sass');
+const supervisor = require('gulp-supervisor');
+const uglify = require('gulp-uglify');
 
 /**
  * Default task when running `gulp`.
@@ -40,7 +40,8 @@ gulp.task('browser-sync', () => {
  * Watches (*.js|*.css|*.sass|*.scss)
  */
 gulp.task('watch', () => {
-  gulp.watch('src/dashboard/views/*.html').on('change', browserSync.reload);
+  gulp.watch('src/dashboard/views/*.html')
+    .on('change', browserSync.reload);
 
   gulp.watch([
     'src/dashboard/static/css/*.css',

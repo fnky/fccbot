@@ -3,36 +3,37 @@ const tmi = require('tmi.js');
 const mongoose = require('mongoose');
 const path = require('path');
 const config = require('config');
+const EventEmitter = require('events').EventEmitter;
 
-var MongoDB = mongoose.connect('mongodb://localhost:27017').connection;
+const bot = require('./bot');
+const dashboard = require('./dashboard/server');
 
-MongoDB.on('error', function(err) {
-  console.log('Database error: ' + err.message);
+const MongoDB = mongoose.connect('mongodb://localhost:27017').connection;
+
+MongoDB.on('error', (err) => {
+  console.log(`Database error: ${err.message}`);
 });
 
-MongoDB.once('open', function() {
+MongoDB.once('open', () => {
   console.log('Connected to database');
 });
 
-var app = express(MongoDB);
+const app = express(MongoDB);
 
 app.use(express.static(path.join(__dirname, 'dashboard/views')));
 app.use(express.static(path.join(__dirname, 'dashboard/static')));
 
-var db = {
+const db = {
   message: require('../schemas/message')(mongoose),
   poll: require('../schemas/poll')(mongoose),
   pollVote: require('../schemas/pollVote')(mongoose)
 };
 
-
-
 const port = process.env.PORT || (config.get('testPort') ? 3000 : 80);
-var server = app.listen(port, () => {
-  console.log('Server live on port ' + port);
+const server = app.listen(port, () => {
+  console.log(`Server live on port ${port}`);
 });
-var io = require('socket.io').listen(server);
-
+const io = require('socket.io').listen(server);
 
 const options = {
   options: {
@@ -46,7 +47,7 @@ const options = {
     username: config.get('twitch.username'),
     password: config.get('twitch.oauth').trim()
   },
-  channels: config.get('twitch.channels').map(channel => '#'+channel)
+  channels: config.get('twitch.channels').map((channel) => `#${channel}`)
 };
 
 const whisperoptions = {
@@ -56,15 +57,15 @@ const whisperoptions = {
     reconnect: true
   },
   identity: options.identity
-}
+};
 
-var client = new tmi.client(options);
-var whisperclient = new tmi.client(whisperoptions);
+const client = new tmi.client(options);
+const whisperclient = new tmi.client(whisperoptions);
 
 client.connect();
 whisperclient.connect();
 
-var communicator = Object.create(require('events').EventEmitter.prototype);
+const communicator = Object.create(EventEmitter.prototype);
 
-require('./bot/index')(app, db, io, communicator, config, client, whisperclient);
-require('./dashboard/server')(app, db, io, communicator, config);
+bot(app, db, io, communicator, config, client, whisperclient);
+dashboard(app, db, io, communicator, config);
